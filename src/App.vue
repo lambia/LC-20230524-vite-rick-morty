@@ -1,39 +1,71 @@
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ListaPersonaggi from './components/ListaPersonaggi.vue'
+
+import { store } from './data/store'
+import axios from 'axios';
 
 export default {
   name: "App",
   components: {
-    HelloWorld
+    ListaPersonaggi
+  },
+  data() {
+    return {
+      store,
+      opzioniSelezionabili: [
+        "Tutti",
+        "Rick",
+        "Morty"
+      ],
+      personaggioScelto: "Tutti"
+    }
+  },
+  mounted() {
+
+    this.chiamataDati(this.store.apiUrl);
+
+    // console.log("Store: ", this.store);
+  },
+  methods: {
+    recuperaNuoviDati() {
+      console.log(this.personaggioScelto);
+
+      let indirizzo = this.store.apiUrl;
+
+      if (this.personaggioScelto == "Rick") {
+        indirizzo += "?name=rick";
+      } else if (this.personaggioScelto == "Morty") {
+        indirizzo += "?name=morty"
+      }
+
+      this.chiamataDati(indirizzo);
+    },
+    chiamataDati(indirizzo) {
+
+      this.store.loading = true;
+
+      axios.get(indirizzo).then(result => {
+        const risposta = result.data;
+        console.log("Risultato chiamata: ", risposta.results);
+        this.store.personaggi = risposta.results;
+        this.store.loading = false;
+      }).catch(err => {
+        this.store.personaggi = [];
+      });
+
+    }
   }
 }
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <!-- Recupero le options con un v-for su un array schiantato a mano -->
+  <!-- Voi invece dovrete popolare quell'array facendo una chiamata all'avvio dell'app ;) -->
+  <select @change="recuperaNuoviDati" v-model="personaggioScelto">
+    <option v-for="opzione in opzioniSelezionabili">{{ opzione }}</option>
+  </select>
+  <ListaPersonaggi v-if="store.loading == false" />
+  <span v-else>Sono in attesa dei dati</span>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style lang="scss" scoped></style>
