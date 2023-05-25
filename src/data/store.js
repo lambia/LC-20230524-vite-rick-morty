@@ -3,7 +3,8 @@ import { reactive } from "vue";
 export const store = reactive({
     apiUrl: "https://rickandmortyapi.com/api/character",
     loading: true,
-    personaggi: []
+    nomiPersonaggi: ["Tutti", "Rick", "Morty"],
+    personaggi: [],
     /* Il singolo Personaggio nell'array sarà un oggetto con proprietà:
         id: Number,
         status: String,

@@ -29,7 +29,7 @@ export default {
 
 <template>
   <!-- <div>Personaggi disponibili: {{ this.prendiDatiFiltrati.length }}</div> -->
-  <div>Personaggi disponibili: {{ this.personnaggiDisponibili }}</div>
+  <div class="totalCount">Personaggi disponibili: {{ this.personnaggiDisponibili }}</div>
 
   <div class="cardsWrapper">
     <!-- Possiamo usare un v-for su un template, che poi stampa direttamente i dati -->
@@ -45,13 +45,18 @@ export default {
     </template> -->
 
     <!-- Oppure ancora, eseguiamo direttamente il v-for sul componente interessato, passando il dato -->
-    <CardPersonaggio :personaggio="personaggio" v-for="(personaggio, i) in prendiDatiFiltrati" />
+    <CardPersonaggio :personaggio="personaggio" v-for="(personaggio, i) in store.personaggi" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 @use '../styles/partials/_variables' as *;
 @use '../styles/partials/mixins' as *;
+
+.totalCount {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
 
 .cardsWrapper {
   @include flex(row, center, center, wrap);
